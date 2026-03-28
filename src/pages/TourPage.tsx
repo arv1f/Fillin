@@ -3,6 +3,8 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { HotspotFontSettings } from '../components/HotspotFontSettings'
 import { PanoHotspotsOverlay } from '../components/PanoHotspotsOverlay'
+import { RoomZoneMap } from '../components/RoomZoneMap'
+import { SceneLocationLabel } from '../components/SceneLocationLabel'
 import { hotspotsForScene } from '../data/hotspots'
 import {
   SCENE_CROSSFADE_MS,
@@ -38,7 +40,8 @@ export function TourPage() {
   const [hotspotFont, setHotspotFont] = useHotspotFontPreference()
 
   useEffect(() => {
-    preloadPanoramasAroundScene(sceneId)
+    const cancelSecondRing = preloadPanoramasAroundScene(sceneId)
+    return cancelSecondRing
   }, [sceneId])
 
   return (
@@ -70,6 +73,10 @@ export function TourPage() {
             viewTick={viewTick}
           />
         </div>
+
+        <SceneLocationLabel sceneId={sceneId} />
+
+        <RoomZoneMap currentSceneId={sceneId} />
 
         <nav
           className="pointer-events-none absolute bottom-4 right-4 z-20 flex items-center gap-2 sm:bottom-5 sm:right-5"
