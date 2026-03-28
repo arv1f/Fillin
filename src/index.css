@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --hotspot-font-size: 0.75rem;
+}
+
+html[data-hotspot-font='sm'] {
+  --hotspot-font-size: 0.625rem;
+}
+
+html[data-hotspot-font='md'] {
+  --hotspot-font-size: 0.75rem;
+}
+
+html[data-hotspot-font='lg'] {
+  --hotspot-font-size: 0.9375rem;
+}
+
 html,
 body,
 #root {

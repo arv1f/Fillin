@@ -1,7 +1,9 @@
 import { PanoViewer } from '@egjs/react-view360'
 import { useCallback, useEffect, useLayoutEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { destinationLabel } from '../data/sceneLabels'
 import { isScreenHotspot, type PanoHotspot } from '../data/hotspots'
+import { separateOverlappingRects } from '../lib/hotspotOverlap'
 import {
   normRectFromCorners,
   normRectToPixels,
@@ -44,7 +46,7 @@ function layoutForHotspot(
   const base = {
     key,
     to: hotspot.to,
-    label: hotspot.label,
+    label: destinationLabel(hotspot.to),
   }
 
   if (isScreenHotspot(hotspot)) {
@@ -118,6 +120,12 @@ export function PanoHotspotsOverlay({
     const next = hotspots.map((hotspot, i) =>
       layoutForHotspot(hotspot, i, sceneId, cw, ch, yaw, pitch, fov),
     )
+    const visibleRects = next.filter(
+      (x) => x.visible && x.width > 4 && x.height > 4,
+    )
+    if (visibleRects.length >= 2) {
+      separateOverlappingRects(visibleRects, cw, ch)
+    }
     setLayouts(next)
   }, [containerRef, panoRef, hotspots, sceneId])
 
@@ -147,7 +155,7 @@ export function PanoHotspotsOverlay({
           <Link
             key={item.key}
             to={`/tour/${item.to}`}
-            className="pointer-events-auto absolute rounded-md border border-cyan-400/60 bg-cyan-500/15 outline-none ring-offset-2 ring-offset-zinc-950 transition hover:bg-cyan-500/25 focus-visible:ring-2 focus-visible:ring-cyan-300"
+            className="pointer-events-auto absolute flex items-center justify-center overflow-hidden rounded-md border border-cyan-400/60 bg-cyan-500/15 px-1 py-0.5 text-center outline-none ring-offset-2 ring-offset-zinc-950 transition hover:bg-cyan-500/25 focus-visible:ring-2 focus-visible:ring-cyan-300"
             style={{
               left: item.left,
               top: item.top,
@@ -155,8 +163,15 @@ export function PanoHotspotsOverlay({
               height: item.height,
             }}
             title={item.label}
-            aria-label={item.label ?? `Перейти к панораме ${item.to}`}
-          />
+            aria-label={`${item.label} — панорама ${item.to}`}
+          >
+            <span
+              className="line-clamp-4 max-h-full w-full break-words font-medium leading-tight text-cyan-100 drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)]"
+              style={{ fontSize: 'var(--hotspot-font-size, 0.75rem)' }}
+            >
+              {item.label}
+            </span>
+          </Link>
         ) : null,
       )}
     </div>

@@ -1,19 +1,16 @@
 import { PanoViewer } from '@egjs/react-view360'
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
+import { HotspotFontSettings } from '../components/HotspotFontSettings'
 import { PanoHotspotsOverlay } from '../components/PanoHotspotsOverlay'
 import { hotspotsForScene } from '../data/hotspots'
 import {
   SCENE_CROSSFADE_MS,
   useSceneCrossfade,
 } from '../hooks/useSceneCrossfade'
-import {
-  adjacentScene,
-  isSceneId,
-  panoramaPath,
-  sceneIndex,
-  SCENE_IDS,
-} from '../scenes'
+import { useHotspotFontPreference } from '../hooks/useHotspotFontPreference'
+import { preloadPanoramasAroundScene } from '../lib/panoPreload'
+import { adjacentScene, isSceneId, panoramaPath } from '../scenes'
 
 type PanoViewerInstance = InstanceType<typeof PanoViewer>
 
@@ -34,51 +31,18 @@ export function TourPage() {
     setViewTick((t) => t + 1)
   }, [])
 
-  const index = sceneIndex(sceneId)
-  const prev = adjacentScene(sceneId, -1)
-  const next = adjacentScene(sceneId, 1)
   const src = panoramaPath(displayedId)
-  const total = SCENE_IDS.length
+  const prevScene = adjacentScene(sceneId, -1)
+  const nextScene = adjacentScene(sceneId, 1)
+
+  const [hotspotFont, setHotspotFont] = useHotspotFontPreference()
+
+  useEffect(() => {
+    preloadPanoramasAroundScene(sceneId)
+  }, [sceneId])
 
   return (
     <div className="flex h-dvh w-full flex-col bg-zinc-950 text-zinc-100">
-      <header className="z-10 flex shrink-0 flex-wrap items-center justify-between gap-3 border-b border-zinc-800 px-4 py-3">
-        <div>
-          <h1 className="text-sm font-medium tracking-tight">Виртуальный тур</h1>
-          <p className="mt-0.5 text-xs text-zinc-400">
-            Точка {index + 1} из {total} · {panoramaPath(sceneId)}
-          </p>
-        </div>
-        <nav
-          className="flex items-center gap-2"
-          aria-label="Навигация по точкам тура"
-        >
-          {prev ? (
-            <Link
-              to={`/tour/${prev}`}
-              className="rounded-md border border-zinc-600 bg-zinc-900 px-3 py-1.5 text-xs font-medium text-zinc-200 transition hover:border-zinc-500 hover:bg-zinc-800"
-            >
-              ← Назад
-            </Link>
-          ) : (
-            <span className="rounded-md border border-transparent px-3 py-1.5 text-xs text-zinc-600">
-              ← Назад
-            </span>
-          )}
-          {next ? (
-            <Link
-              to={`/tour/${next}`}
-              className="rounded-md border border-zinc-600 bg-zinc-900 px-3 py-1.5 text-xs font-medium text-zinc-200 transition hover:border-zinc-500 hover:bg-zinc-800"
-            >
-              Вперёд →
-            </Link>
-          ) : (
-            <span className="rounded-md border border-transparent px-3 py-1.5 text-xs text-zinc-600">
-              Вперёд →
-            </span>
-          )}
-        </nav>
-      </header>
       <main className="relative min-h-0 flex-1 bg-zinc-950">
         <div
           ref={panoShellRef}
@@ -106,6 +70,50 @@ export function TourPage() {
             viewTick={viewTick}
           />
         </div>
+
+        <nav
+          className="pointer-events-none absolute bottom-4 right-4 z-20 flex items-center gap-2 sm:bottom-5 sm:right-5"
+          aria-label="Навигация по порядку точек тура"
+        >
+          {prevScene ? (
+            <Link
+              to={`/tour/${prevScene}`}
+              className="pb-1 pointer-events-auto flex h-11 w-11 items-center justify-center rounded-full border border-zinc-600 bg-zinc-950/90 text-lg text-zinc-100 shadow-lg backdrop-blur-sm transition hover:border-cyan-500/60 hover:bg-zinc-900 hover:text-cyan-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400"
+              title={`Предыдущая точка (${prevScene})`}
+              aria-label={`Предыдущая точка ${prevScene}`}
+            >
+              ←
+            </Link>
+          ) : (
+            <span
+              className="pb-1 flex h-11 w-11 cursor-not-allowed items-center justify-center rounded-full border border-zinc-800 bg-zinc-950/60 text-lg text-zinc-600"
+              aria-disabled="true"
+              title="Это первая точка маршрута"
+            >
+              ←
+            </span>
+          )}
+          {nextScene ? (
+            <Link
+              to={`/tour/${nextScene}`}
+              className="pb-1 pointer-events-auto flex h-11 w-11 items-center justify-center rounded-full border border-zinc-600 bg-zinc-950/90 text-lg text-zinc-100 shadow-lg backdrop-blur-sm transition hover:border-cyan-500/60 hover:bg-zinc-900 hover:text-cyan-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400"
+              title={`Следующая точка (${nextScene})`}
+              aria-label={`Следующая точка ${nextScene}`}
+            >
+              →
+            </Link>
+          ) : (
+            <span
+              className="pb-1 flex h-11 w-11 cursor-not-allowed items-center justify-center rounded-full border border-zinc-800 bg-zinc-950/60 text-lg text-zinc-600"
+              aria-disabled="true"
+              title="Это последняя точка маршрута"
+            >
+              →
+            </span>
+          )}
+        </nav>
+
+        <HotspotFontSettings size={hotspotFont} onChange={setHotspotFont} />
       </main>
     </div>
   )

@@ -35,7 +35,10 @@ function rotateY(v: Vec3, rad: number): Vec3 {
   return [c * v[0] + s * v[2], v[1], -s * v[0] + c * v[2]]
 }
 
-/** Вектор в пространстве «камеры» View360: vEye = Ry(-yaw) * Rx(-pitch) * vWorld */
+/**
+ * Вектор в пространстве «камеры» View360 (как в PanoImageRenderer.renderWithYawPitch):
+ * mvMatrix = Rx(-pitch) * Ry(-yaw) → vEye = Rx(-pitch) * Ry(-yaw) * vWorld
+ */
 export function worldToCameraSpace(
   world: Vec3,
   yawDeg: number,
@@ -44,8 +47,8 @@ export function worldToCameraSpace(
   const y = yawDeg * DEG
   const p = pitchDeg * DEG
   let v: Vec3 = [world[0], world[1], world[2]]
-  v = rotateX(v, -p)
   v = rotateY(v, -y)
+  v = rotateX(v, -p)
   return v
 }
 
