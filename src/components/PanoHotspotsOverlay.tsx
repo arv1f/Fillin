@@ -124,7 +124,7 @@ export function PanoHotspotsOverlay({
       (x) => x.visible && x.width > 4 && x.height > 4,
     )
     if (visibleRects.length >= 2) {
-      separateOverlappingRects(visibleRects, cw, ch)
+      separateOverlappingRects(visibleRects, cw)
     }
     setLayouts(next)
   }, [containerRef, panoRef, hotspots, sceneId])
@@ -147,7 +147,7 @@ export function PanoHotspotsOverlay({
 
   return (
     <div
-      className="pointer-events-none absolute inset-0 z-10"
+      className="pointer-events-none absolute inset-0 z-10 overflow-hidden"
       aria-hidden={!anyVisible}
     >
       {layouts.map((item) =>
@@ -167,7 +167,7 @@ export function PanoHotspotsOverlay({
           >
             <span
               className="line-clamp-4 max-h-full w-full break-words font-medium leading-tight text-cyan-100 drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)]"
-              style={{ fontSize: 'var(--hotspot-font-size, 0.75rem)' }}
+              style={{ fontSize: 'var(--hotspot-font-size)' }}
             >
               {item.label}
             </span>

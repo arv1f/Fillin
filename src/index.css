@@ -2,20 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * Текст кнопок на панораме: min / fluid (vmin ≈ доля меньшей стороны) / max.
+ * Пресеты sm | md | lg сохраняют относительные размеры на любом экране.
+ */
 :root {
-  --hotspot-font-size: 0.75rem;
+  --hotspot-font-size: clamp(0.75rem, 0.62rem + 0.52vmin, 1.0625rem);
 }
 
 html[data-hotspot-font='sm'] {
-  --hotspot-font-size: 0.625rem;
+  --hotspot-font-size: clamp(0.625rem, 0.52rem + 0.42vmin, 0.95rem);
 }
 
 html[data-hotspot-font='md'] {
-  --hotspot-font-size: 0.75rem;
+  --hotspot-font-size: clamp(0.75rem, 0.62rem + 0.52vmin, 1.0625rem);
 }
 
 html[data-hotspot-font='lg'] {
-  --hotspot-font-size: 0.9375rem;
+  --hotspot-font-size: clamp(0.8125rem, 0.68rem + 0.56vmin, 1.125rem);
 }
 
 html,

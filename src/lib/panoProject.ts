@@ -12,6 +12,19 @@ export const HOTSPOT_MAX_H_PX = 200
 const HOTSPOT_BASE_W = 104
 const HOTSPOT_BASE_H = 80
 
+/** Короткая сторона вьюпорта (px), при которой масштаб кнопки ≈ 1. */
+const HOTSPOT_UI_REF_MIN_EDGE = 900
+
+/**
+ * Лёгкая адаптация размеров кнопок к экрану: на узких вьюпортах чуть меньше, на широких — чуть больше.
+ * Угловой размер (kx/ky) уже зависит от размера контейнера; здесь подстраиваются min/base/max в px.
+ */
+export function hotspotUiScaleFromViewport(cw: number, ch: number): number {
+  const m = Math.min(Math.max(cw, 1), Math.max(ch, 1))
+  const t = m / HOTSPOT_UI_REF_MIN_EDGE
+  return Math.min(1.22, Math.max(0.78, t))
+}
+
 /** Направление из центра сферы к точке панорамы (как у lookAt: yaw, pitch в градусах). */
 export function worldDirFromYawPitch(yawDeg: number, pitchDeg: number): Vec3 {
   const y = yawDeg * DEG
@@ -164,6 +177,7 @@ function pixelSpanPerDegreeYaw(
     centerYawDeg - epsDeg,
     centerPitchDeg,
   )
+  const ui = hotspotUiScaleFromViewport(cw, ch)
   if (pr && pl) {
     return Math.hypot(pr.x - pl.x, pr.y - pl.y) / (2 * epsDeg)
   }
@@ -173,7 +187,7 @@ function pixelSpanPerDegreeYaw(
   if (pl && c) {
     return Math.hypot(c.x - pl.x, c.y - pl.y) / epsDeg
   }
-  return HOTSPOT_BASE_W / 10
+  return (HOTSPOT_BASE_W * ui) / 10
 }
 
 function pixelSpanPerDegreePitch(
@@ -213,6 +227,7 @@ function pixelSpanPerDegreePitch(
     centerYawDeg,
     centerPitchDeg - epsDeg,
   )
+  const ui = hotspotUiScaleFromViewport(cw, ch)
   if (pu && pd) {
     return Math.hypot(pu.x - pd.x, pu.y - pd.y) / (2 * epsDeg)
   }
@@ -222,7 +237,7 @@ function pixelSpanPerDegreePitch(
   if (pd && c) {
     return Math.hypot(c.x - pd.x, c.y - pd.y) / epsDeg
   }
-  return HOTSPOT_BASE_H / 8
+  return (HOTSPOT_BASE_H * ui) / 8
 }
 
 export type YawPitchRectCaps = {
@@ -248,6 +263,7 @@ export function projectYawPitchRect(
 ): ScreenRect {
   const cw = containerWidth
   const ch = containerHeight
+  const uiScale = hotspotUiScaleFromViewport(cw, ch)
 
   const c = projectToPixel(
     cw,
@@ -291,31 +307,29 @@ export function projectYawPitchRect(
     pitchHalfSpanDeg > 1e-6 ? yawHalfSpanDeg / pitchHalfSpanDeg : 1
   const wScale = Math.min(Math.max(angularAspect, 0.55), 2.2)
   if (width < 4 || height < 4) {
-    width = Math.round(HOTSPOT_BASE_W * wScale)
-    height = HOTSPOT_BASE_H
+    width = Math.round(HOTSPOT_BASE_W * wScale * uiScale)
+    height = Math.round(HOTSPOT_BASE_H * uiScale)
   }
 
-  width = Math.max(width, HOTSPOT_MIN_PX)
-  height = Math.max(height, HOTSPOT_MIN_PX)
+  const minPx = Math.round(HOTSPOT_MIN_PX * uiScale)
+  width = Math.max(width, minPx)
+  height = Math.max(height, minPx)
 
   const maxW = Math.min(
-    caps?.maxWidthPx ?? HOTSPOT_MAX_W_PX,
+    Math.round((caps?.maxWidthPx ?? HOTSPOT_MAX_W_PX) * uiScale),
     Math.floor(cw * 0.4),
   )
   const maxH = Math.min(
-    caps?.maxHeightPx ?? HOTSPOT_MAX_H_PX,
+    Math.round((caps?.maxHeightPx ?? HOTSPOT_MAX_H_PX) * uiScale),
     Math.floor(ch * 0.38),
   )
   width = Math.min(width, maxW)
   height = Math.min(height, maxH)
 
-  let left = c.x - width / 2
-  let top = c.y - height / 2
-
-  if (left + width > cw) left = Math.max(0, cw - width)
-  if (top + height > ch) top = Math.max(0, ch - height)
-  if (left < 0) left = 0
-  if (top < 0) top = 0
+  // Центр на проекции точки; left/top не подгоняем под вьюпорт — иначе кнопка
+  // «прилипает» целиком к краю при повороте вместо естественного обрезания.
+  const left = c.x - width / 2
+  const top = c.y - height / 2
 
   return {
     left,

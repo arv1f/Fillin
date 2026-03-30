@@ -21,7 +21,6 @@ function overlap(a: Rect, b: Rect, gap: number): boolean {
 export function separateOverlappingRects(
   rects: Rect[],
   cw: number,
-  ch: number,
   gap = 8,
 ): void {
   const n = rects.length
@@ -69,11 +68,5 @@ export function separateOverlappingRects(
       }
     }
     if (!changed) break
-  }
-
-  for (let i = 0; i < n; i++) {
-    const r = rects[i]!
-    r.top = Math.max(0, Math.min(r.top, ch - r.height))
-    r.left = Math.max(0, Math.min(r.left, cw - r.width))
   }
 }
