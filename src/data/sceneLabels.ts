@@ -1,6 +1,10 @@
 import type { SceneId } from '../scenes'
 
-/** Одна подпись на каждую панораму-назначение — для всех хотспотов с этим `to`. */
+/**
+ * Подписи панорам (точек маршрута):
+ * — верхний блок «зона — название точки»: `destinationLabel(sceneId)`;
+ * — текст на кнопках перехода: `destinationLabel(hotspot.to)`.
+ */
 const DESTINATION_LABELS: Record<SceneId, string> = {
   '00': 'Вход',
   '01': 'Первый баннер',
@@ -10,15 +14,15 @@ const DESTINATION_LABELS: Record<SceneId, string> = {
   '05': 'Пятый баннер',
   '06': 'Шестой баннер',
   '07': 'Инфо-бар',
-  '08': 'Схемы',
-  '09': 'Творчество',
+  '08': 'Кабинет диспетчека',
+  '09': 'Информационная витрина',
   '10': 'Карта России',
   '11': 'Краткая сводка',
   '12': 'Ядро',
-  '14': 'Мини станция',
-  '15': 'Ветряки',
+  '14': 'Интерактивный макет',
+  '15': 'Источники энергии',
   '16': 'Стено-схема',
-  '17': 'Тренажёр',
+  '17': 'Игровой зал',
   '18': 'Игр автомат 1',
   '19': 'Игр автомат 2',
   '20': '3D модель',
@@ -30,20 +34,6 @@ const DESTINATION_LABELS: Record<SceneId, string> = {
 
 export function destinationLabel(id: SceneId): string {
   return DESTINATION_LABELS[id] ?? `Точка ${id}`
-}
-
-/**
- * Группа помещения по номеру сцены (для подписи «комната — точка»).
- * 00–12 Коридор; 14–16 вторая комната; 17–20 интерактивная; 21–24 историческая.
- */
-export function roomZoneLabel(sceneId: SceneId): string {
-  const n = Number.parseInt(sceneId, 10)
-  if (Number.isNaN(n)) return 'Зона'
-  if (n >= 0 && n <= 12) return 'Коридор'
-  if (n >= 14 && n <= 16) return 'Вторая комната'
-  if (n >= 17 && n <= 20) return 'Интерактивная комната'
-  if (n >= 21 && n <= 24) return 'Историческая комната'
-  return 'Зона'
 }
 
 /** Тип зоны для карты и подсветки. */
@@ -62,6 +52,37 @@ export function sceneZoneKind(sceneId: SceneId): SceneZoneKind {
   if (n >= 17 && n <= 20) return 'interactive'
   if (n >= 21 && n <= 24) return 'historical'
   return 'other'
+}
+
+/**
+ * Названия зон (левая часть подписи «зона — точка» и карта «Карта зон»).
+ * Меняйте строки здесь — везде подтянется одно и то же.
+ */
+export const ZONE_LABELS: Record<
+  Exclude<SceneZoneKind, 'other'>,
+  string
+> = {
+  corridor: 'Коридор',
+  second: 'Вторая комната',
+  interactive: 'Интерактивная комната',
+  historical: 'Историческая комната',
+}
+
+/** Диапазоны точек на карте зон (подписи диапазонов — отдельно от названий зон). */
+export const ZONE_MAP_RANGES: {
+  kind: Exclude<SceneZoneKind, 'other'>
+  range: string
+}[] = [
+  { kind: 'corridor', range: '00–12' },
+  { kind: 'second', range: '14–16' },
+  { kind: 'interactive', range: '17–20' },
+  { kind: 'historical', range: '21–24' },
+]
+
+export function roomZoneLabel(sceneId: SceneId): string {
+  const k = sceneZoneKind(sceneId)
+  if (k === 'other') return 'Зона'
+  return ZONE_LABELS[k]
 }
 
 /** Первая точка зоны для перехода с карты. */

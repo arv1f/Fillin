@@ -44,15 +44,15 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
       yawHalfSpan: 6,
       pitchHalfSpan: 70,
     },
-    {
-      to: '08',
-      yaw: -25,
-      pitch: -5,
-      yawHalfSpan: 10,
-      pitchHalfSpan: 100,
-      maxWidthPx: 190,
-      maxHeightPx: 200,
-    },
+      {
+        to: '08',
+        yaw: -25,
+        pitch: -5,
+        yawHalfSpan: 10,
+        pitchHalfSpan: 100,
+        maxWidthPx: 190,
+        maxHeightPx: 200,
+      },
   ],
   '01': [
     {
@@ -483,6 +483,15 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
   ],
   '14': [
     {
+      to: '21',
+      yaw: -92,
+      pitch: 50,
+      yawHalfSpan: 4,
+      pitchHalfSpan: 180,
+      maxWidthPx: 190,
+      maxHeightPx: 200,
+    },
+    {
       to: '16',
       yaw: 246,
       pitch: 5,
@@ -517,9 +526,18 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
       pitchHalfSpan: 80,
       maxWidthPx: 190,
       maxHeightPx: 200,
-    }
+    },
   ],
   '15': [
+    {
+      to: '21',
+      yaw: 157.5,
+      pitch: 5,
+      yawHalfSpan: 4,
+      pitchHalfSpan: 150,
+      maxWidthPx: 190,
+      maxHeightPx: 200,
+    },
     {
       to: '17',
       yaw: 98,
@@ -559,6 +577,15 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
   ],
   '16': [
     {
+      to: '21',
+      yaw: 54,
+      pitch: -7,
+      yawHalfSpan: 7,
+      pitchHalfSpan: 400,
+      maxWidthPx: 190,
+      maxHeightPx: 300,
+    },
+    {
       to: '17',
       yaw: -49,
       pitch: -10,
@@ -596,15 +623,6 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
     },
   ],
   '17': [
-    {
-      to: '21',
-      yaw: -135,
-      pitch: 10,
-      yawHalfSpan: 5,
-      pitchHalfSpan: 100,
-      maxWidthPx: 190,
-      maxHeightPx: 200,
-    },
     {
       to: '20',
       yaw: -155,
@@ -644,15 +662,6 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
   ],
   '18': [
     {
-      to: '21',
-      yaw: -69,
-      pitch: -15,
-      yawHalfSpan: 4,
-      pitchHalfSpan: 100,
-      maxWidthPx: 190,
-      maxHeightPx: 200,
-    },
-    {
       to: '20',
       yaw: -92,
       pitch: -10,
@@ -691,15 +700,6 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
   ],
   '19': [
     {
-      to: '21',
-      yaw: -47,
-      pitch: -25,
-      yawHalfSpan: 8,
-      pitchHalfSpan: 30,
-      maxWidthPx: 190,
-      maxHeightPx: 200,
-    },
-    {
       to: '20',
       yaw: -80,
       pitch: -5,
@@ -735,13 +735,6 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
     },
   ],
   '20': [
-    {
-      to: '21',
-      yaw: 97,
-      pitch: 10,
-      yawHalfSpan: 13,
-      pitchHalfSpan: 60,
-    },
     {
       to: '19',
       yaw: 155,

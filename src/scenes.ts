@@ -50,3 +50,8 @@ export function adjacentScene(
   if (i < 0 || i >= SCENE_IDS.length) return null
   return SCENE_IDS[i]!
 }
+
+/** Следующая точка по порядку; с последней — снова первая (зацикливание вперёд). */
+export function nextSceneOrWrap(id: SceneId): SceneId {
+  return adjacentScene(id, 1) ?? SCENE_IDS[0]!
+}

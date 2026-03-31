@@ -3,26 +3,14 @@ import { Link } from 'react-router-dom'
 import {
   entrySceneForZone,
   sceneZoneKind,
-  type SceneZoneKind,
+  ZONE_LABELS,
+  ZONE_MAP_RANGES,
 } from '../data/sceneLabels'
 import type { SceneId } from '../scenes'
 
 type Props = {
   currentSceneId: SceneId
 }
-
-type ZoneDef = {
-  kind: SceneZoneKind
-  title: string
-  range: string
-}
-
-const ZONES: ZoneDef[] = [
-  { kind: 'corridor', title: 'Коридор', range: '00–12' },
-  { kind: 'second', title: 'Вторая комната', range: '14–16' },
-  { kind: 'interactive', title: 'Интерактивная', range: '17–20' },
-  { kind: 'historical', title: 'Историческая', range: '21–24' },
-]
 
 function zoneClass(active: boolean): string {
   const base =
@@ -62,7 +50,7 @@ export function RoomZoneMap({ currentSceneId }: Props) {
           </p>
 
           <div className="grid grid-cols-3 gap-1.5">
-            {ZONES.map((z) => {
+            {ZONE_MAP_RANGES.map((z) => {
               const isHere = active === z.kind
               const entry = entrySceneForZone(z.kind)
               if (!entry) return null
@@ -71,11 +59,11 @@ export function RoomZoneMap({ currentSceneId }: Props) {
                   key={z.kind}
                   to={`/tour/${entry}`}
                   className={`${zoneClass(isHere)} ${z.kind === 'corridor' ? 'col-span-3' : ''}`}
-                  title={`Перейти к точке ${entry}`}
+                  title={`${ZONE_LABELS[z.kind]} (${z.range}) — точка ${entry}`}
                   onClick={() => setOpen(false)}
                 >
                   <span className="text-[11px] font-semibold leading-tight sm:text-xs scale-90">
-                    {z.title}
+                    {ZONE_LABELS[z.kind]}
                   </span>
                 </Link>
               )

@@ -12,7 +12,12 @@ import {
 } from '../hooks/useSceneCrossfade'
 import { useHotspotFontPreference } from '../hooks/useHotspotFontPreference'
 import { preloadPanoramasAroundScene } from '../lib/panoPreload'
-import { adjacentScene, isSceneId, panoramaPath } from '../scenes'
+import {
+  adjacentScene,
+  isSceneId,
+  nextSceneOrWrap,
+  panoramaPath,
+} from '../scenes'
 
 type PanoViewerInstance = InstanceType<typeof PanoViewer>
 
@@ -34,8 +39,11 @@ export function TourPage() {
   }, [])
 
   const src = panoramaPath(displayedId)
+  const panoHotspots = hotspotsForScene(displayedId)
+  const hotspotsOverlayKey = `${displayedId}:${panoHotspots.map((h) => h.to).join(',')}`
   const prevScene = adjacentScene(sceneId, -1)
-  const nextScene = adjacentScene(sceneId, 1)
+  const nextScene = nextSceneOrWrap(sceneId)
+  const isLastScene = adjacentScene(sceneId, 1) === null
 
   const [hotspotFont, setHotspotFont] = useHotspotFontPreference()
 
@@ -66,8 +74,9 @@ export function TourPage() {
             onViewChange={bumpPanoLayout}
           />
           <PanoHotspotsOverlay
+            key={hotspotsOverlayKey}
             sceneId={displayedId}
-            hotspots={hotspotsForScene(displayedId)}
+            hotspots={panoHotspots}
             panoRef={panoRef}
             containerRef={panoShellRef}
             viewTick={viewTick}
@@ -100,24 +109,22 @@ export function TourPage() {
               ←
             </span>
           )}
-          {nextScene ? (
-            <Link
-              to={`/tour/${nextScene}`}
-              className="pb-1 pointer-events-auto flex h-11 w-11 items-center justify-center rounded-full border border-zinc-600 bg-zinc-950/90 text-lg text-zinc-100 shadow-lg backdrop-blur-sm transition hover:border-cyan-500/60 hover:bg-zinc-900 hover:text-cyan-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400"
-              title={`Следующая точка (${nextScene})`}
-              aria-label={`Следующая точка ${nextScene}`}
-            >
-              →
-            </Link>
-          ) : (
-            <span
-              className="pb-1 flex h-11 w-11 cursor-not-allowed items-center justify-center rounded-full border border-zinc-800 bg-zinc-950/60 text-lg text-zinc-600"
-              aria-disabled="true"
-              title="Это последняя точка маршрута"
-            >
-              →
-            </span>
-          )}
+          <Link
+            to={`/tour/${nextScene}`}
+            className="pb-1 pointer-events-auto flex h-11 w-11 items-center justify-center rounded-full border border-zinc-600 bg-zinc-950/90 text-lg text-zinc-100 shadow-lg backdrop-blur-sm transition hover:border-cyan-500/60 hover:bg-zinc-900 hover:text-cyan-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400"
+            title={
+              isLastScene
+                ? `С начала маршрута (${nextScene})`
+                : `Следующая точка (${nextScene})`
+            }
+            aria-label={
+              isLastScene
+                ? `С начала маршрута, точка ${nextScene}`
+                : `Следующая точка ${nextScene}`
+            }
+          >
+            →
+          </Link>
         </nav>
 
         <HotspotFontSettings size={hotspotFont} onChange={setHotspotFont} />
