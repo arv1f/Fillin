@@ -1,4 +1,7 @@
-import { destinationLabel, roomZoneLabel } from '../data/sceneLabels'
+import {
+  useRoomZoneTitle,
+  useSceneTitle,
+} from '../contexts/SceneContentContext'
 import type { SceneId } from '../scenes'
 
 type Props = {
@@ -6,8 +9,8 @@ type Props = {
 }
 
 export function SceneLocationLabel({ sceneId }: Props) {
-  const room = roomZoneLabel(sceneId)
-  const place = destinationLabel(sceneId)
+  const room = useRoomZoneTitle(sceneId)
+  const place = useSceneTitle(sceneId)
 
   return (
     <div

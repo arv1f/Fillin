@@ -1,7 +1,6 @@
 import { PanoViewer } from '@egjs/react-view360'
 import { useCallback, useEffect, useLayoutEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { destinationLabel } from '../data/sceneLabels'
 import { isScreenHotspot, type PanoHotspot } from '../data/hotspots'
 import { separateOverlappingRects } from '../lib/hotspotOverlap'
 import {
@@ -27,6 +26,8 @@ type LayoutItem = {
 type Props = {
   sceneId: SceneId
   hotspots: PanoHotspot[]
+  /** Подписи точек назначения (из БД / API). */
+  sceneTitles: Record<string, string>
   panoRef: React.RefObject<PanoViewerInstance | null>
   containerRef: React.RefObject<HTMLDivElement | null>
   viewTick: number
@@ -41,12 +42,13 @@ function layoutForHotspot(
   yaw: number,
   pitch: number,
   fov: number,
+  getTitle: (id: SceneId) => string,
 ): LayoutItem {
   const key = `${sceneId}-${i}-${hotspot.to}`
   const base = {
     key,
     to: hotspot.to,
-    label: destinationLabel(hotspot.to),
+    label: getTitle(hotspot.to),
   }
 
   if (isScreenHotspot(hotspot)) {
@@ -76,6 +78,7 @@ function layoutForHotspot(
 export function PanoHotspotsOverlay({
   sceneId,
   hotspots,
+  sceneTitles,
   panoRef,
   containerRef,
   viewTick,
@@ -117,8 +120,21 @@ export function PanoHotspotsOverlay({
       }
     }
 
+    const getTitle = (id: SceneId) =>
+      sceneTitles[id] ?? `Точка ${id}`
+
     const next = hotspots.map((hotspot, i) =>
-      layoutForHotspot(hotspot, i, sceneId, cw, ch, yaw, pitch, fov),
+      layoutForHotspot(
+        hotspot,
+        i,
+        sceneId,
+        cw,
+        ch,
+        yaw,
+        pitch,
+        fov,
+        getTitle,
+      ),
     )
     const visibleRects = next.filter(
       (x) => x.visible && x.width > 4 && x.height > 4,
@@ -127,7 +143,7 @@ export function PanoHotspotsOverlay({
       separateOverlappingRects(visibleRects, cw)
     }
     setLayouts(next)
-  }, [containerRef, panoRef, hotspots, sceneId])
+  }, [containerRef, panoRef, hotspots, sceneId, sceneTitles])
 
   useLayoutEffect(() => {
     recompute()

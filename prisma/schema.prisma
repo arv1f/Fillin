@@ -16,3 +16,25 @@ model AdminUser {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
+
+/// Подпись точки маршрута (панорама): кнопки перехода и блок «зона — название».
+model SceneCopy {
+  sceneId String @id
+  title   String
+  updatedAt DateTime @updatedAt
+}
+
+/// Название зоны и подпись диапазона на карте.
+model ZoneCopy {
+  zoneKey  String @id
+  title    String
+  mapRange String @default("")
+  updatedAt DateTime @updatedAt
+}
+
+/// Произвольные строки интерфейса (ключ → текст).
+model SiteCopy {
+  key   String @id
+  value String
+  updatedAt DateTime @updatedAt
+}

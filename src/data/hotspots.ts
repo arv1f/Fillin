@@ -33,7 +33,7 @@ export function isScreenHotspot(h: PanoHotspot): h is PanoHotspotScreen {
  * Хотспоты по сценам.
  * — `mode: 'screen'` + `corners`: фиксированная область на экране.
  * — иначе сфера по yaw/pitch.
- * Подписи на кнопках: `destinationLabel(to)` в `sceneLabels.ts`.
+ * Подписи на кнопках переходов — из контекста (`copy.scenes`), см. `TourPage` / `PanoHotspotsOverlay`.
  */
 export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
   '00': [
