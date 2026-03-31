@@ -1,0 +1,61 @@
+# Fillin: статика + прокси API (без proxy на /api PUT даёт 405).
+# 1) Поправь server_name и пути к ssl_certificate (или закомментируй ssl и слушай только 80 для теста).
+# 2) sudo cp nginx-fillin.conf.example /etc/nginx/sites-available/fillin
+# 3) sudo ln -sf /etc/nginx/sites-available/fillin /etc/nginx/sites-enabled/
+# 4) sudo nginx -t && sudo systemctl reload nginx
+#
+# Node API должен слушать 127.0.0.1:4000 (ADMIN_API_PORT), см. pm2/systemd.
+
+upstream fillin_api {
+  server 127.0.0.1:4000;
+  keepalive 8;
+}
+
+server {
+  listen 80;
+  listen [::]:80;
+  server_name _;
+
+  # Раскомментируй после настройки HTTPS:
+  # return 301 https://$host$request_uri;
+
+  root /var/www/fillin;
+  index index.html;
+
+  location /api {
+    proxy_pass http://fillin_api;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    client_max_body_size 2m;
+  }
+
+  location / {
+    try_files $uri $uri/ /index.html;
+  }
+}
+
+# Раскомментируй и настрой SSL для продакшена:
+# server {
+#   listen 443 ssl http2;
+#   listen [::]:443 ssl http2;
+#   server_name your-domain.ru;
+#   ssl_certificate     /etc/letsencrypt/live/your-domain.ru/fullchain.pem;
+#   ssl_certificate_key /etc/letsencrypt/live/your-domain.ru/privkey.pem;
+#   root /var/www/fillin;
+#   index index.html;
+#   location /api {
+#     proxy_pass http://fillin_api;
+#     proxy_http_version 1.1;
+#     proxy_set_header Host $host;
+#     proxy_set_header X-Real-IP $remote_addr;
+#     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+#     proxy_set_header X-Forwarded-Proto $scheme;
+#     client_max_body_size 2m;
+#   }
+#   location / {
+#     try_files $uri $uri/ /index.html;
+#   }
+# }

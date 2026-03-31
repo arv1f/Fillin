@@ -81,5 +81,12 @@ Write-Host "==> scp public -> $RemoteRoot"
 scp @SshOpts -i $KeyPath -r (Join-Path $ProjectRoot "public\.") "${Remote}:${RemoteRoot}/"
 Assert-Exit "scp public"
 
+$NginxExample = Join-Path $ProjectRoot "scripts\nginx-fillin.conf.example"
+if (Test-Path -LiteralPath $NginxExample) {
+  Write-Host "==> scp nginx example -> $RemoteRoot"
+  scp @SshOpts -i $KeyPath $NginxExample "${Remote}:${RemoteRoot}/nginx-fillin.conf.example"
+  Assert-Exit "scp nginx example"
+}
+
 Write-Host "==> OK: uploaded to ${Remote}:${RemoteRoot}"
-Write-Host "    Configure nginx root here. Add public/MainJPG on server if needed."
+Write-Host "    API: proxy /api -> 127.0.0.1:4000 (see nginx-fillin.conf.example on server)."
