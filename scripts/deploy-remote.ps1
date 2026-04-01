@@ -88,5 +88,9 @@ if (Test-Path -LiteralPath $NginxExample) {
   Assert-Exit "scp nginx example"
 }
 
+Write-Host "==> ssh: chmod (Caddy читает как user caddy — нужен обход каталогов и чтение файлов)"
+ssh @SshOpts -i $KeyPath $Remote "chmod 755 '$RemoteRoot' && chmod -R a+rX '$RemoteRoot'"
+Assert-Exit "ssh chmod web root"
+
 Write-Host "==> OK: uploaded to ${Remote}:${RemoteRoot}"
-Write-Host "    API: proxy /api -> 127.0.0.1:4000 (see nginx-fillin.conf.example on server)."
+Write-Host "    API: proxy /api -> 127.0.0.1:4000 (Caddy или nginx)."

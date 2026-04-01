@@ -4,10 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "postinstall": "node scripts/patch-egjs-tsconfig.mjs",
     "dev": "vite",
     "dev:force": "vite --force",
     "dev:all": "concurrently -n web,api -c cyan,magenta \"npm run dev\" \"npm run server:dev\"",
     "server:dev": "tsx watch server/index.ts",
+    "server:start": "tsx server/index.ts",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:studio": "prisma studio",

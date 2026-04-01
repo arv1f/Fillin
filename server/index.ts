@@ -76,6 +76,16 @@ function requireAdmin(
   next()
 }
 
+/** Тексты для админки (только с валидным X-Admin-Token). */
+app.get('/api/admin/copy', requireAdmin, async (_req, res) => {
+  try {
+    const data = await loadPublicCopy()
+    res.json(data)
+  } catch {
+    res.status(500).json({ error: 'database_error' })
+  }
+})
+
 /** Сохранение всех текстов (админка). */
 app.put('/api/admin/copy', requireAdmin, async (req, res) => {
   const body = req.body as Partial<PublicCopyPayload>
@@ -128,7 +138,7 @@ app.put('/api/admin/copy', requireAdmin, async (req, res) => {
   }
 })
 
-app.get('/api/admin/users', async (_req, res) => {
+app.get('/api/admin/users', requireAdmin, async (_req, res) => {
   try {
     const users = await prisma.adminUser.findMany({
       select: {

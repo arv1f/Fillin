@@ -5,6 +5,8 @@ import type { SceneId } from '../scenes'
 export type PanoHotspotSphere = {
   mode?: 'sphere'
   to: SceneId
+  /** Если задано — подпись кнопки на этой сцене вместо названия точки из БД. */
+  customLabel?: string
   yaw: number
   pitch: number
   yawHalfSpan: number
@@ -20,6 +22,8 @@ export type PanoHotspotSphere = {
 export type PanoHotspotScreen = {
   mode: 'screen'
   to: SceneId
+  /** Если задано — подпись кнопки на этой сцене вместо названия точки из БД. */
+  customLabel?: string
   corners: ScreenCornerQuad
 }
 
@@ -33,15 +37,15 @@ export function isScreenHotspot(h: PanoHotspot): h is PanoHotspotScreen {
  * Хотспоты по сценам.
  * — `mode: 'screen'` + `corners`: фиксированная область на экране.
  * — иначе сфера по yaw/pitch.
- * Подписи на кнопках переходов — из контекста (`copy.scenes`), см. `TourPage` / `PanoHotspotsOverlay`.
+ * Подписи на кнопках — из БД (`copy.scenes`), либо `customLabel` на конкретном хотспоте (другая подпись с этой сцены на ту же точку).
  */
 export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
   '00': [
     {
       to: '01',
-      yaw: -74,
+      yaw: -75,
       pitch: 5,
-      yawHalfSpan: 6,
+      yawHalfSpan: 14,
       pitchHalfSpan: 70,
     },
       {
@@ -71,8 +75,35 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
       maxWidthPx: 190,
       maxHeightPx: 200,
     },
+    {
+      to: '08',
+      yaw: 100,
+      pitch: -5,
+      yawHalfSpan: 10,
+      pitchHalfSpan: 100,
+      maxWidthPx: 190,
+      maxHeightPx: 200,
+    },
   ],
   '02': [
+    {
+      to: '10',
+      yaw: 131,
+      pitch: 0,
+      yawHalfSpan: 5,
+      pitchHalfSpan: 7,
+      maxWidthPx: 190,
+      maxHeightPx: 200,
+    },
+    {
+      to: '08',
+      yaw: 100,
+      pitch: -5,
+      yawHalfSpan: 10,
+      pitchHalfSpan: 100,
+      maxWidthPx: 190,
+      maxHeightPx: 200,
+    },
     {
       to: '03',
       yaw: 28,
@@ -90,9 +121,37 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
       pitchHalfSpan: 60,
       maxWidthPx: 190,
       maxHeightPx: 200,
+      customLabel: 'Первый этап',
     }
   ],
   '03': [
+    {
+      to: '09',
+      yaw: 162,
+      pitch: 0,
+      yawHalfSpan: 20,
+      pitchHalfSpan: 100,
+      maxWidthPx: 300,
+      maxHeightPx: 200,
+    },
+    {
+      to: '10',
+      yaw: 135,
+      pitch: -5,
+      yawHalfSpan: 6,
+      pitchHalfSpan: 6,
+      maxWidthPx: 190,
+      maxHeightPx: 200,
+    },
+    {
+      to: '08',
+      yaw: 100,
+      pitch: -5,
+      yawHalfSpan: 10,
+      pitchHalfSpan: 100,
+      maxWidthPx: 190,
+      maxHeightPx: 200,
+    },
     {
       to: '04',
       yaw: 28,
@@ -114,6 +173,42 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
   ],
   '04': [
     {
+      to: '12',
+      yaw: 157,
+      pitch: -1,
+      yawHalfSpan: 6,
+      pitchHalfSpan: 5,
+      maxWidthPx: 200,
+      maxHeightPx: 180,
+    },
+    {
+      to: '09',
+      yaw: 181,
+      pitch: 0,
+      yawHalfSpan: 20,
+      pitchHalfSpan: 100,
+      maxWidthPx: 300,
+      maxHeightPx: 200,
+    },
+    {
+      to: '10',
+      yaw: 140,
+      pitch: 0,
+      yawHalfSpan: 6,
+      pitchHalfSpan: 6,
+      maxWidthPx: 190,
+      maxHeightPx: 200,
+    },
+    {
+      to: '08',
+      yaw: 100,
+      pitch: -5,
+      yawHalfSpan: 10,
+      pitchHalfSpan: 100,
+      maxWidthPx: 190,
+      maxHeightPx: 200,
+    },
+    {
       to: '05',
       yaw: 28,
       pitch: -5,
@@ -134,6 +229,51 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
   ],
   '05': [
     {
+      to: '12',
+      yaw: 166,
+      pitch: -1,
+      yawHalfSpan: 10,
+      pitchHalfSpan: 9,
+      maxWidthPx: 200,
+      maxHeightPx: 120,
+    },
+    {
+      to: '09',
+      yaw: 203,
+      pitch: 0,
+      yawHalfSpan: 20,
+      pitchHalfSpan: 100,
+      maxWidthPx: 300,
+      maxHeightPx: 200,
+    },
+    {
+      to: '10',
+      yaw: 146,
+      pitch: 0,
+      yawHalfSpan: 6,
+      pitchHalfSpan: 6,
+      maxWidthPx: 190,
+      maxHeightPx: 200,
+    },
+    {
+      to: '08',
+      yaw: 100,
+      pitch: -5,
+      yawHalfSpan: 10,
+      pitchHalfSpan: 100,
+      maxWidthPx: 190,
+      maxHeightPx: 200,
+    },
+    {
+      to: '07',
+      yaw: 53,
+      pitch: 0,
+      yawHalfSpan: 16,
+      pitchHalfSpan: 60,
+      maxWidthPx: 180,
+      maxHeightPx: 160,
+    },
+    {
       to: '06',
       yaw: 28,
       pitch: -5,
@@ -141,6 +281,7 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
       pitchHalfSpan: 60,
       maxWidthPx: 190,
       maxHeightPx: 200,
+      customLabel: 'Шестой этап'
     },
     {
       to: '04',
@@ -153,6 +294,42 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
     }
   ],
   '06': [
+    {
+      to: '12',
+      yaw: 172,
+      pitch: -1,
+      yawHalfSpan: 10,
+      pitchHalfSpan: 9,
+      maxWidthPx: 200,
+      maxHeightPx: 120,
+    },
+    {
+      to: '09',
+      yaw: 220,
+      pitch: 0,
+      yawHalfSpan: 20,
+      pitchHalfSpan: 100,
+      maxWidthPx: 300,
+      maxHeightPx: 200,
+    },
+    {
+      to: '10',
+      yaw: 153,
+      pitch: 0,
+      yawHalfSpan: 6,
+      pitchHalfSpan: 6,
+      maxWidthPx: 190,
+      maxHeightPx: 200,
+    },
+    {
+      to: '08',
+      yaw: 100,
+      pitch: -5,
+      yawHalfSpan: 10,
+      pitchHalfSpan: 100,
+      maxWidthPx: 190,
+      maxHeightPx: 200,
+    },
     {
       to: '07',
       yaw:40,
@@ -173,6 +350,15 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
     }
   ],
   '07': [
+    {
+      to: '12',
+      yaw: 185,
+      pitch: -1,
+      yawHalfSpan: 10,
+      pitchHalfSpan: 5,
+      maxWidthPx: 190,
+      maxHeightPx: 200,
+    },
     {
       to: '09',
       yaw: 232,
@@ -195,9 +381,9 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
       to: '06',
       yaw: -55,
       pitch: 0,
-      yawHalfSpan: 7,
+      yawHalfSpan: 10,
       pitchHalfSpan: 100,
-      maxWidthPx: 190,
+      maxWidthPx: 240,
       maxHeightPx: 400,
     }
   ],
@@ -206,10 +392,11 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
       to: '14',
       yaw: 110,
       pitch: 20,
-      yawHalfSpan: 2.5,
+      yawHalfSpan: 6,
       pitchHalfSpan: 100,
       maxWidthPx: 190,
       maxHeightPx: 240,
+      customLabel: 'Зона основной экспозиции',
     },
     {
       to: '12',
@@ -253,7 +440,7 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
       pitch: -5,
       yawHalfSpan: 100,
       pitchHalfSpan: 100,
-      maxWidthPx: 190,
+      maxWidthPx: 240,
       maxHeightPx: 300,
     },
   ],
@@ -300,7 +487,7 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
       pitch: 0,
       yawHalfSpan: 8,
       pitchHalfSpan: 100,
-      maxWidthPx: 190,
+      maxWidthPx: 240,
       maxHeightPx: 250,
     },
     {
@@ -322,6 +509,7 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
       pitchHalfSpan: 100,
       maxWidthPx: 300,
       maxHeightPx: 500,
+      customLabel: 'Зона основной экспозиции',
     },
     {
       to: '12',
@@ -365,7 +553,7 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
       pitch: -3,
       yawHalfSpan: 4,
       pitchHalfSpan: 20,
-      maxWidthPx: 190,
+      maxWidthPx: 240,
       maxHeightPx: 200,
     },
   ],
@@ -378,6 +566,7 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
       pitchHalfSpan: 120,
       maxWidthPx: 280,
       maxHeightPx: 300,
+      customLabel: 'Зона основной экспозиции',
     },
     {
       to: '12',
@@ -421,7 +610,7 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
       pitch: 2,
       yawHalfSpan: 4,
       pitchHalfSpan: 30,
-      maxWidthPx: 190,
+      maxWidthPx: 240,
       maxHeightPx: 200,
     },
   ],
@@ -434,6 +623,7 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
       pitchHalfSpan: 60,
       maxWidthPx: 190,
       maxHeightPx: 200,
+      customLabel: 'Зона основной экспозиции',
     },
     {
       to: '11',
@@ -477,7 +667,7 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
       pitch: 0,
       yawHalfSpan: 4,
       pitchHalfSpan: 6,
-      maxWidthPx: 190,
+      maxWidthPx: 240,
       maxHeightPx: 200,
     },
   ],
@@ -490,16 +680,17 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
       pitchHalfSpan: 180,
       maxWidthPx: 190,
       maxHeightPx: 200,
+      customLabel: 'Исторический кабинет диспетчера',
     },
-    {
-      to: '16',
-      yaw: 246,
-      pitch: 5,
-      yawHalfSpan: 9,
-      pitchHalfSpan: 100,
-      maxWidthPx: 190,
-      maxHeightPx: 200,
-    },
+    // {
+    //   to: '16',
+    //   yaw: 246,
+    //   pitch: 5,
+    //   yawHalfSpan: 9,
+    //   pitchHalfSpan: 100,
+    //   maxWidthPx: 190,
+    //   maxHeightPx: 200,
+    // },
     {
       to: '17',
       yaw: 221,
@@ -526,6 +717,7 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
       pitchHalfSpan: 80,
       maxWidthPx: 190,
       maxHeightPx: 200,
+      customLabel: 'Первая комната',
     },
   ],
   '15': [
@@ -537,6 +729,7 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
       pitchHalfSpan: 150,
       maxWidthPx: 190,
       maxHeightPx: 200,
+      customLabel: 'Исторический кабинет диспетчера',
     },
     {
       to: '17',
@@ -547,15 +740,15 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
       maxWidthPx: 220,
       maxHeightPx: 260,
     },
-    {
-      to: '16',
-      yaw: 135,
-      pitch: -5,
-      yawHalfSpan: 14,
-      pitchHalfSpan: 60,
-      maxWidthPx: 190,
-      maxHeightPx: 200,
-    },
+    // {
+    //   to: '16',
+    //   yaw: 135,
+    //   pitch: -5,
+    //   yawHalfSpan: 14,
+    //   pitchHalfSpan: 60,
+    //   maxWidthPx: 190,
+    //   maxHeightPx: 200,
+    // },
     {
       to: '14',
       yaw: -124,
@@ -573,6 +766,7 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
       pitchHalfSpan: 100,
       maxWidthPx: 190,
       maxHeightPx: 200,
+      customLabel: 'Первая комната',
     },
   ],
   '16': [
@@ -584,6 +778,7 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
       pitchHalfSpan: 400,
       maxWidthPx: 190,
       maxHeightPx: 300,
+      customLabel: 'Исторический кабинет диспетчера',
     },
     {
       to: '17',
@@ -620,6 +815,7 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
       pitchHalfSpan: 100,
       maxWidthPx: 190,
       maxHeightPx: 200,
+      customLabel: 'Первая комната',
     },
   ],
   '17': [
@@ -658,6 +854,7 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
       pitchHalfSpan: 60,
       maxWidthPx: 190,
       maxHeightPx: 200,
+      customLabel: 'Зона основной экспозиции',
     }
   ],
   '18': [
@@ -696,6 +893,7 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
       pitchHalfSpan: 1000,
       maxWidthPx: 190,
       maxHeightPx: 200,
+      customLabel: 'Зона основной экспозиции',
     },
   ],
   '19': [
@@ -732,6 +930,7 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
       pitchHalfSpan: 1000,
       maxWidthPx: 190,
       maxHeightPx: 200,
+      customLabel: 'Зона основной экспозиции',
     },
   ],
   '20': [
@@ -769,6 +968,7 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
       pitchHalfSpan: 40,
       maxWidthPx: 190,
       maxHeightPx: 200,
+      customLabel: 'Зона основной экспозиции',
     },
   ],
   '21': [
@@ -798,12 +998,13 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
       pitchHalfSpan: 60,
     },
     {
-      to: '20',
+      to: '16',
       yaw: -42,
       pitch: -5,
       yawHalfSpan: 14,
       pitchHalfSpan: 60,
       maxWidthPx: 190,
+      customLabel: 'Зона основной экспозиции',
     }
   ],
   '22': [
@@ -835,13 +1036,14 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
       maxHeightPx: 200,
     },
     {
-      to: '20',
+      to: '16',
       yaw: -124,
       pitch: 10,
       yawHalfSpan: 10,
       pitchHalfSpan: 100,
       maxWidthPx: 190,
       maxHeightPx: 200,
+      customLabel: 'Зона основной экспозиции',
     },
   ],
   '23': [
@@ -873,13 +1075,14 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
       maxHeightPx: 200,
     },
     {
-      to: '20',
+      to: '16',
       yaw: -187,
       pitch: 5,
       yawHalfSpan: 10,
       pitchHalfSpan: 10,
       maxWidthPx: 190,
       maxHeightPx: 200,
+      customLabel: 'Зона основной экспозиции',
     },
   ],
   '24': [
@@ -911,7 +1114,7 @@ export const HOTSPOTS_BY_SCENE: Partial<Record<SceneId, PanoHotspot[]>> = {
       maxHeightPx: 200,
     },
     {
-      to: '20',
+      to: '16',
       yaw: 120,
       pitch: 0,
       yawHalfSpan: 100,

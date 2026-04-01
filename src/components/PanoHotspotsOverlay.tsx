@@ -45,10 +45,12 @@ function layoutForHotspot(
   getTitle: (id: SceneId) => string,
 ): LayoutItem {
   const key = `${sceneId}-${i}-${hotspot.to}`
+  const custom = hotspot.customLabel?.trim()
+  const label = custom || getTitle(hotspot.to)
   const base = {
     key,
     to: hotspot.to,
-    label: getTitle(hotspot.to),
+    label,
   }
 
   if (isScreenHotspot(hotspot)) {

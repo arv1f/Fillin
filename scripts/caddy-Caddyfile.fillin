@@ -1,0 +1,14 @@
+# Fillin: статика + API. Скопировать в /etc/caddy/Caddyfile (после остановки nginx на 80/443).
+aes.applepie-recipe.ru {
+	root * /var/www/fillin
+	encode gzip
+
+	handle /api* {
+		reverse_proxy 127.0.0.1:4000
+	}
+
+	handle {
+		try_files {path} /index.html
+		file_server
+	}
+}
